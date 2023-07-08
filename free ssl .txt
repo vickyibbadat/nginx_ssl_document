@@ -1,0 +1,49 @@
+Update: Using Free SSL/TLS Certificates with NGINX
+(1)apt-get update
+(2)sudo apt-get install certbot
+(3)apt-get install python-certbot-nginx
+
+SET UP NGINX  :-
+create a directory in   /etc/nginx/conf.d /protocall.pro.ssl (floder name )
+cd protocall.pro.ssl 
+vi protocall.pro (file name)
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    server_name protocall.pro www.protocall.pro;
+}
+:wq! ( save file)
+
+(4) nginx -t && nginx -s reload                            (verify the syntax of your configuration and restart NGINX)
+(5) certbot --nginx -d protocall.pro   -d www.protocall.pro       (generate certificates with the NGINX plug‑in:)
+#some configure add to link domain email id (then enter)
+
+
+# If you look at some add configration protocall.pro (file)
+(5)   vi  /etc/nginx/conf.d /protocall.pro.ssl/protocall.pro 
+
+    # RSA certificate
+    ssl_certificate /etc/letsencrypt/live/protocall.pro/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/protocall.pro/privkey.pem; # managed by Certbot
+     ssl_certificate_key /etc/letsencrypt/live/protocall.pro/cert.pem; # managed by Certbot
+
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+
+    # Redirect non-https traffic to https
+    if ($scheme != "https") {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+}
+:wq!
+
+(6) systemctl restart nginx
+
+
+
+                                       protocall.pro(Domain name)
+                                       # all key ( private key, bundlle.key,cert.key) in there location 
+                                        /etc/letsencrypt/live/protocall.pro
+
+
+             https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/ (set up free ssl link)
